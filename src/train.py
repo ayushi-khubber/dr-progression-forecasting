@@ -1,10 +1,3 @@
-"""Second half: hybrid models + optimiser comparison + evaluation.
-
-Run from the project root (after extract_features):
-    python -m src.train
-Options:  --no-grade   drop baseline DR grade from the clinical features (ablation)
-          --epochs 60
-"""
 import argparse
 import copy
 

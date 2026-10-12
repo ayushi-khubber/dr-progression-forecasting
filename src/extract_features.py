@@ -1,6 +1,3 @@
-"""Step 1: build table + splits, step 2: extract frozen deep features
-from each backbone. Run from project root:  python -m src.extract_features
-"""
 import numpy as np
 import timm
 import torch
