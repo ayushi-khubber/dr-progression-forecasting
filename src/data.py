@@ -65,15 +65,12 @@ def build_table():
     df = df.rename(columns={"grade": "grade_base"})
     print(f"Matched {len(df)}/{n0} manifest rows to clinical data")
 
-    # drop grade 6 (post-photocoagulation), 7 (ungradable) and missing grades
     ok = df["grade_base"].between(1, 5) & df["grade_fu"].between(1, 5)
     print(f"Dropped {(~ok).sum()} rows with grade 6/7/missing")
     df = df[ok].copy()
 
-    # LABEL: progression = follow-up grade worse than baseline grade
     df["label"] = (df["grade_fu"] > df["grade_base"]).astype(int)
 
-    # drop pairs whose baseline image file is missing on disk
     ok_file = df["baseline_path"].map(lambda p: (C.ROOT / p).exists())
     if (~ok_file).any():
         print(f"Dropped {(~ok_file).sum()} rows with a missing baseline image file")
@@ -108,8 +105,6 @@ def prepare_clinical(df):
     sc = StandardScaler().fit(imp.transform(X[tr]))
     return sc.transform(imp.transform(X)).astype(np.float32), list(X.columns)
 
-
-# ---------- image preprocessing ----------
 def crop_borders(img, tol=10):
     mask = cv2.cvtColor(img, cv2.COLOR_RGB2GRAY) > tol
     if mask.sum() == 0:

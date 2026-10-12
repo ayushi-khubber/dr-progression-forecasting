@@ -7,7 +7,6 @@ from tqdm import tqdm
 from . import config as C
 from .data import build_table, make_splits, prepare_clinical, DRDataset
 
-
 @torch.no_grad()
 def extract(model_name, loader):
     model = timm.create_model(model_name, pretrained=True, num_classes=0)
@@ -16,7 +15,6 @@ def extract(model_name, loader):
     for img, _, _ in tqdm(loader, desc=model_name):
         feats.append(model(img.to(C.DEVICE)).cpu().numpy())
     return np.concatenate(feats)
-
 
 if __name__ == "__main__":
     torch.manual_seed(C.SEED); np.random.seed(C.SEED)
