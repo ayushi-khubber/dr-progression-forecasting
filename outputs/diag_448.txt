@@ -1,0 +1,2 @@
+grade>=2 vs 1   size=448 patient AUROC=0.681
+grade>=3 vs 1   size=448 patient AUROC=0.661

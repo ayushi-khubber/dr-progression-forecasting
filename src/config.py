@@ -11,9 +11,10 @@ NUM_WORKERS = 0
 INCLUDE_BASELINE_GRADE = True       
 
 BACKBONES = {
-    "effnet_b3": "efficientnet_b3",
-    "swin_tiny": "swin_tiny_patch4_window7_224",
+    "effnet_b3":    "efficientnet_b3",
+    "swin_tiny":    "swin_tiny_patch4_window7_224",   
 }
+
 COL_KEYS = {"age": "age", "sex": "sex", "hba1c": "hba1c",
             "glucose": "glu", "hyp": "blood-pressure"}
 

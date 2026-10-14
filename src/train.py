@@ -6,20 +6,24 @@ import pandas as pd
 import torch
 import torch.nn as nn
 from sklearn.linear_model import LogisticRegression
-from sklearn.metrics import (average_precision_score, brier_score_loss,
-                             confusion_matrix, f1_score, matthews_corrcoef,
-                             precision_score, roc_auc_score)
+from sklearn.metrics import (accuracy_score, average_precision_score,
+                             brier_score_loss, confusion_matrix, f1_score,
+                             matthews_corrcoef, precision_score, roc_auc_score)
 from sklearn.model_selection import StratifiedGroupKFold, train_test_split
 from sklearn.preprocessing import StandardScaler
 
 from . import config as C
+
+from sklearn.impute import SimpleImputer
+from sklearn.pipeline import make_pipeline
 
 OPTIMISERS = {
     "AdamW": lambda p: torch.optim.AdamW(p, lr=1e-3, weight_decay=1e-2),
     "Adam": lambda p: torch.optim.Adam(p, lr=1e-3),
     "SGD": lambda p: torch.optim.SGD(p, lr=1e-2, momentum=0.9, weight_decay=1e-4),
 }
-METRICS = ["AUROC", "AUPRC", "Sens", "Spec", "Prec", "F1", "BalAcc", "MCC", "Brier"]
+METRICS = ["AUROC", "AUPRC", "Acc", "Sens", "Spec", "Prec",
+           "F1", "BalAcc", "MCC", "Brier"]
 
 def best_thr(y, p):
     """Threshold maximising F1 on the validation set."""
@@ -37,10 +41,11 @@ def metrics(y, p, thr):
     sens = tp / (tp + fn) if tp + fn else 0.0
     spec = tn / (tn + fp) if tn + fp else 0.0
     return dict(AUROC=roc_auc_score(y, p), AUPRC=average_precision_score(y, p),
-                Sens=sens, Spec=spec,
-                Prec=precision_score(y, pred, zero_division=0),
-                F1=f1_score(y, pred, zero_division=0), BalAcc=(sens + spec) / 2,
-                MCC=matthews_corrcoef(y, pred), Brier=brier_score_loss(y, p))
+            Acc=accuracy_score(y, pred),
+            Sens=sens, Spec=spec,
+            Prec=precision_score(y, pred, zero_division=0),
+            F1=f1_score(y, pred, zero_division=0), BalAcc=(sens + spec) / 2,
+            MCC=matthews_corrcoef(y, pred), Brier=brier_score_loss(y, p))
 
 
 class Net(nn.Module):
@@ -108,7 +113,7 @@ def main():
     eff = np.load(C.OUT / "feat_effnet_b3.npy")
     swin = np.load(C.OUT / "feat_swin_tiny.npy")
     if args.no_grade:
-        clin = clin[:, :-1]            # grade_base is the last clinical column
+        clin = clin[:, :-1]    
     y, groups = df["label"].values, df["pid"].values
     print(f"{len(df)} eye pairs | {df.pid.nunique()} patients | "
           f"positives {y.mean():.1%} | clinical features: {clin.shape[1]}")
@@ -116,7 +121,6 @@ def main():
     skf = StratifiedGroupKFold(n_splits=5, shuffle=True, random_state=C.SEED)
     rows = []
     for fold, (tr_idx, te_idx) in enumerate(skf.split(eff, y, groups)):
-        # patient-level validation split inside the training part
         sub = df.iloc[tr_idx]
         pats = sub.groupby("pid")["label"].max().reset_index()
         _, vp = train_test_split(pats, test_size=0.15, stratify=pats["label"],
@@ -124,9 +128,9 @@ def main():
         is_val = sub["pid"].isin(vp["pid"]).values
         va_idx, tr_idx = tr_idx[is_val], tr_idx[~is_val]
 
-        def prep(arr):                  
-            sc = StandardScaler().fit(arr[tr_idx])
-            return [sc.transform(arr[i]).astype(np.float32) for i in (tr_idx, va_idx, te_idx)]
+        def prep(arr):
+            pipe = make_pipeline(SimpleImputer(strategy="median"), StandardScaler()).fit(arr[tr_idx])
+            return [pipe.transform(arr[i]).astype(np.float32) for i in (tr_idx, va_idx, te_idx)]
 
         E, S, K = prep(eff), prep(swin), prep(clin)
         ytr, yva, yte = y[tr_idx], y[va_idx], y[te_idx]

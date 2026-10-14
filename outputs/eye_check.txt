@@ -1,0 +1,16 @@
+
+=== Per-eye outcomes (544 patients, 544 with both eyes gradable) ===
+OS worsened  0.0  1.0
+OD worsened          
+0.0          443   33
+1.0           38   30
+Patients where exactly ONE eye worsened (eye identity matters): 71
+Patients where BOTH eyes worsened: 30
+Patients where NEITHER worsened:   443
+
+=== Laterality from disc position (470 two-image patients) ===
+Two eyes have the disc on OPPOSITE sides: 84.7%   (want > ~90%)
+Among those, baseline_index 0 has disc on the RIGHT: 48.2%   (want near 0% or 100% = index maps consistently to one eye)
+Baseline and paired follow-up image on the SAME side: 86.4%   (want > ~90%)
+
+Saved outputs/eye_side.csv
