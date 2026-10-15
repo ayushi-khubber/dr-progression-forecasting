@@ -1,4 +1,0 @@
-grade>=2 vs 1                  EffNet  eyes=1014 pos=0.28 AUROC=0.635
-grade>=2 vs 1                  Swin    eyes=1014 pos=0.28 AUROC=0.642
-grade>=3 vs 1 (drop grade 2)   EffNet  eyes=927 pos=0.21 AUROC=0.654
-grade>=3 vs 1 (drop grade 2)   Swin    eyes=927 pos=0.21 AUROC=0.640

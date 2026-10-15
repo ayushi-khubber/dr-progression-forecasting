@@ -70,10 +70,10 @@ def main():
     header = "| " + " | ".join(table.columns) + " |"
     sep = "|" + "---|" * len(table.columns)
     body = ["| " + " | ".join(map(str, r)) + " |" for r in table.values]
-    (out_dir / "results_table.md").write_text("\n".join([header, sep] + body), encoding="utf-8")
+    (out_dir / f"{stem}_table.md").write_text("\n".join([header, sep] + body), encoding="utf-8")
 
     try:
-        table.to_excel(out_dir / "results_table.xlsx", index=False)
+        table.to_excel(out_dir / f"{stem}_table.xlsx", index=False)
         print("\nSaved: results_table.csv, results_table.md, results_table.xlsx")
     except ImportError:
         print("\nSaved: results_table.csv, results_table.md "

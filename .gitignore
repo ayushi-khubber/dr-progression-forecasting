@@ -1,6 +1,9 @@
+.DS_Store
 .venv/
 data/
 __pycache__/
-*.pyc
-outputs/*.npy
-outputs/table.csv
+montage.png
+organized/1_cohort_and_features/
+organized/2_data_checks/quality.csv
+organized/2_data_checks/eye_side.csv
+organized/*/oof_finetune_*.csv
