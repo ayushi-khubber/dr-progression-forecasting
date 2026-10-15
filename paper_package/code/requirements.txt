@@ -1,0 +1,13 @@
+# REQUIREMENTS
+torch
+torchvision
+timm
+numpy
+pandas
+openpyxl
+opencv-python
+albumentations
+scikit-learn
+huggingface_hub
+matplotlib
+tqdm

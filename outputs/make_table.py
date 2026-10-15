@@ -13,6 +13,7 @@ METRICS = [
     ("BalAcc", "Balanced Acc."),
     ("AUROC", "AUROC"),
     ("AUPRC", "AUPRC"),
+    ("Acc", "Accuracy"),
 ]
 
 DECIMALS = 3
@@ -62,7 +63,8 @@ def main():
     print(table.to_string(index=False))
 
     out_dir = csv_path.parent
-    table.to_csv(out_dir / "results_table.csv", index=False)
+    stem = csv_path.stem.replace("_summary", "")  
+    table.to_csv(out_dir / f"{stem}_table.csv", index=False)
 
     # Markdown (no extra packages needed)
     header = "| " + " | ".join(table.columns) + " |"
