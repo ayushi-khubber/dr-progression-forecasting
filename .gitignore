@@ -9,3 +9,5 @@ organized/2_data_checks/eye_side.csv
 organized/*/oof_finetune_*.csv
 aptos/data/
 aptos/outputs/*.npy
+aptos/data/
+aptos/outputs/*.npy
