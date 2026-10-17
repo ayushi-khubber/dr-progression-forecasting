@@ -1,11 +1,3 @@
-"""Train and evaluate hybrid heads on the frozen APTOS features.
-
-Run from the aptos/ folder:
-    python code/aptos_train.py --task binary      # DR vs no DR (detection)
-    python code/aptos_train.py --task grade5      # 5-class severity grading
-    python code/aptos_train.py --task binary --smoke   # 1-minute test run
-Needs outputs/feat_*_{train,valid,test}.npy and outputs/labels_*.npy from aptos_features.py.
-"""
 import argparse
 from pathlib import Path
 
@@ -68,16 +60,15 @@ def main():
     grid_df = pd.DataFrame(grid_rows)
     grid_df.to_csv(OUT / f"aptos_{a.task}_grid.csv", index=False)
 
-    # choose the learning rate per (model, optimiser) using VALIDATION score only
     chosen = {}
     for (name, opt), g in grid_df.groupby(["model", "optimiser"]):
         lr = g.loc[g.val_score.idxmax(), "lr"]
         chosen[(name, opt)] = (lr, *runs[(name, opt, lr)])
-    for opt in grid:                               # ensemble = average of the chosen EffNet and Swin outputs
+    for opt in grid:          
         e, s = chosen[("EffNet-B3", opt)], chosen[("Swin-T", opt)]
         chosen[("Ensemble: avg(EffNet, Swin)", opt)] = ("-", (e[1] + s[1]) / 2, (e[2] + s[2]) / 2)
 
-    cat = lambda s: np.hstack(X[s])                # simple linear baseline on both feature sets
+    cat = lambda s: np.hstack(X[s])       
     lr_m = LogisticRegression(C=0.05, max_iter=3000, class_weight="balanced").fit(cat("train"), ytr)
     pv, pt = lr_m.predict_proba(cat("valid")), lr_m.predict_proba(cat("test"))
     if a.task == "binary":

@@ -1,10 +1,3 @@
-"""Extract frozen EfficientNet-B3 and Swin-T features for the APTOS images.
-
-Run from the aptos/ folder:
-    python code/aptos_features.py --limit 16     # quick test on 16 images per split (writes outputs/smoke/)
-    python code/aptos_features.py                # full run (all 3,662 images; resumes if interrupted)
-Writes outputs/feat_{effnet_b3,swin_tiny}_{train,valid,test}.npy and outputs/labels_{split}.npy
-"""
 import argparse
 from pathlib import Path
 

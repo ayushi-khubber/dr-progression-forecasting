@@ -1,4 +1,3 @@
-"""Small MLP heads trained on frozen features (same design as train.py in the forecasting project)."""
 import copy
 
 import numpy as np
@@ -15,7 +14,6 @@ OPT = {
 
 
 class Net(nn.Module):
-    """One small branch per input block, concatenated, then a classifier head."""
 
     def __init__(self, dims, n_out, h=128):
         super().__init__()
@@ -35,7 +33,6 @@ def _t(arrs):
 
 
 def fit_predict(Xtr, ytr, Xva, yva, Xte, opt_name, lr, task, epochs, seed, patience=12):
-    """Train on Xtr, early-stop on Xva, return (valid probs, test probs)."""
     torch.manual_seed(seed)
     n_out = 1 if task == "binary" else 5
     net = Net([x.shape[1] for x in Xtr], n_out)

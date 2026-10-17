@@ -1,4 +1,3 @@
-"""Metric, threshold and bootstrap helpers for the APTOS experiments (no torch needed)."""
 import numpy as np
 import pandas as pd
 from sklearn.metrics import (accuracy_score, average_precision_score, balanced_accuracy_score,
@@ -7,7 +6,6 @@ from sklearn.metrics import (accuracy_score, average_precision_score, balanced_a
 
 
 def best_thr(y, p):
-    """Threshold that maximises F1 on the validation set."""
     best_t, best_f = 0.5, -1.0
     for t in np.quantile(p, np.linspace(0.05, 0.95, 91)):
         f = f1_score(y, (p >= t).astype(int), zero_division=0)
